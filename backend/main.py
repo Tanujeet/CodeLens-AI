@@ -11,16 +11,19 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# Update CORS to accept requests from your deployed frontend
+# Standard Production CORS Fix
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://*.vercel.app" # Allows testing across all your Vercel preview/production deployments
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ─── ISS HEALTH CHECK ROUTE KO ADD KAREIN ──────────────────────────
+@app.get("/")
+async def health_check():
+    return {"status": "healthy", "message": "CodeLens AI Backend is running perfectly!"}
+# ──────────────────────────────────────────────────────────────────
 
 app.include_router(router)
