@@ -1,0 +1,38 @@
+# Cache and Build folders
+.next/
+out/
+build/
+dist/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node modules
+node_modules/
+
+# Python Virtual Environment
+backend/venv/
+venv/
+ENV/
+env/
+
+# Environment Variables / Secrets (Bohat zaroori!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDEs and Editors settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
