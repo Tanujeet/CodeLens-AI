@@ -18,7 +18,7 @@ app.add_middleware(
         "http://localhost:3000",
         "https://*.vercel.app" # Allows testing across all your Vercel preview/production deployments
     ],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
