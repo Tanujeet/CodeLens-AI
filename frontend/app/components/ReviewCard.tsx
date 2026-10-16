@@ -42,26 +42,18 @@ function parseReview(review: string) {
         return [{ key: "suggestions", content: "No review available." }];
   const sections: { key: string; content: string }[] = [];
 
-  const patterns = [
-    { key: "bugs", regex: /1\.\s*Bugs[^]*?(?=2\.|$)/i },
-    { key: "security", regex: /2\.\s*Security[^]*?(?=3\.|$)/i },
-    { key: "quality", regex: /3\.\s*Code Quality[^]*?(?=4\.|$)/i },
-    { key: "performance", regex: /4\.\s*Performance[^]*?(?=5\.|$)/i },
-    { key: "suggestions", regex: /5\.\s*Suggestions[^]*?$/i },
-  ];
-
-  for (const { key, regex } of patterns) {
-    const match = review.match(regex);
-    if (match) {
-      const content = match[0]
-        .replace(
-          /^\d+\.\s*(Bugs.*?|Security.*?|Code Quality.*?|Performance.*?|Suggestions.*?)\n/i,
-          "",
-        )
-        .replace(/#{1,4}\s*/g, "")
-        .trim();
-      if (content) sections.push({ key, content });
+  const keys = ["bugs", "security", "quality", "performance", "suggestions"];
+  let key = "suggestions";
+  for (const line of review.split("\n")) {
+    const heading = line.match(/^\s*(?:#{1,6}\s*)?(?:\*\*)?([1-5])\.\s*(?:\*\*)?(Bugs\b|Security\b|Code Quality\b|Performance\b|Suggestions\b)/i);
+    if (heading) {
+      key = keys[Number(heading[1]) - 1];
+      continue;
     }
+    if (!line.trim()) continue;
+    const section = sections.find((section) => section.key === key);
+    if (section) section.content += "\n" + line;
+    else sections.push({ key, content: line });
     }
     return sections.length > 0
         ? sections

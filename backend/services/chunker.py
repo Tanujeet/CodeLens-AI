@@ -7,13 +7,11 @@ def chunk_files(files:list):
             continue
 
 
-        patch = patch[:3000]
-
-     
-        chunks.append({
-            "filename":file["filename"],
-            "patch":patch
-        })
+        for start in range(0, len(patch), 3000):
+            chunks.append({
+                "filename":file["filename"],
+                "patch":patch[start:start + 3000]
+            })
     
 
     return chunks

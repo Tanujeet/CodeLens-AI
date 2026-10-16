@@ -17,8 +17,11 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async () => {
-    if (!repoName || !prNumber) {
-      setError("Please fill in both fields.");
+    if (loading) return;
+    const repo = repoName.trim();
+    const pr = Number(prNumber);
+    if (!/^[A-Za-z0-9][A-Za-z0-9-]*\/[A-Za-z0-9_.-]+$/.test(repo) || !Number.isSafeInteger(pr) || pr <= 0) {
+      setError("Enter a repository as owner/repo and a positive whole PR number.");
       return;
     }
     setError("");
@@ -37,17 +40,19 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          repo_name: repoName,
-          pr_number: parseInt(prNumber),
+          repo_name: repo,
+          pr_number: pr,
         }),
       });
 
-      if (!res.ok) throw new Error();
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(typeof data.detail === "string" ? data.detail : "The review request failed. Check the repository and PR number.");
+      }
       setReviews(data.reviews ?? []);
       setSubmitted(true);
-    } catch {
-      setError("Something went wrong. Make sure the backend is running.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }

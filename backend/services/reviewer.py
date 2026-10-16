@@ -8,8 +8,10 @@ load_dotenv()
 
 
 llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    api_key=os.getenv("GROQ_API_KEY")
+    model=os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"),
+    api_key=os.getenv("GROQ_API_KEY"),
+    timeout=60,
+    max_retries=1
 )
 
 
@@ -28,6 +30,7 @@ Review the changes and provide structured feedback on:
 5. Suggestions for improvement
 
 Be specific, mention line numbers where possible. Keep feedback concise and actionable.
+Use the five numbered headings above on separate lines. This may be only part of a file's diff; do not assume omitted code is missing from the file.
 """)
 
 chain = prompt | llm
